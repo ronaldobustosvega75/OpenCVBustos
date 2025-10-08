@@ -2,16 +2,7 @@ import streamlit as st
 import cv2
 import numpy as np
 
-def setup_page(title, icon="🎨", layout="wide", hide_header=True):
-    """
-    Configura la página con estilos comunes y oculta elementos de Streamlit
-    
-    Args:
-        title: Título de la página
-        icon: Emoji del ícono
-        layout: Layout de la página (wide o centered)
-        hide_header: Si True, oculta GitHub/Fork pero mantiene los 3 puntitos
-    """
+def setup_page(layout="wide", hide_header=True):
     st.set_page_config(page_title=title, page_icon=icon, layout=layout)
     
     if hide_header:

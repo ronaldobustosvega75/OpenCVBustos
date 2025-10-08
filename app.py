@@ -6,7 +6,7 @@ hide_streamlit_style = """
     <style>
     header {visibility: hidden;}
     /* Mantener visible SOLO el botón del sidebar */
-    header[data-testid="stHeader"] button[kind="header"] {
+    button[kind="header"] {
         visibility: visible !important;
     }
     .stDeployButton {display:none;}
@@ -26,6 +26,7 @@ Explora el procesamiento de imágenes con OpenCV.
 **Navega usando el menú lateral ⬅️**
 """)
 st.info("👈 Selecciona un capítulo del menú lateral para comenzar")
+
 
 
 

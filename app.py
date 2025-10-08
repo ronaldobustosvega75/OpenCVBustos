@@ -7,7 +7,6 @@ hide_streamlit_style = """
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stDeployButton {display:none;}
-    button[kind="header"] {display: none;}
     .viewerBadge_container__1QSob {display: none;}
     
     /* Mantener visible el menú de 3 puntos */
@@ -24,6 +23,7 @@ Explora el procesamiento de imágenes con OpenCV.
 **Navega usando el menú lateral ⬅️**
 """)
 st.info("👈 Selecciona un capítulo del menú lateral para comenzar")
+
 
 
 

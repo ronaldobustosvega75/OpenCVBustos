@@ -4,13 +4,15 @@ st.set_page_config(page_title="Procesamiento de Imágenes", page_icon="🎨", la
 
 hide_streamlit_style = """
     <style>
-    header {visibility: hidden;}
-    .stDeployButton {display:none;}
+    /* Ocultar Deploy y badges */
+    .stDeployButton {display: none;}
     .viewerBadge_container__1QSob {display: none;}
     
-    /* Mantener visible el menú de 3 puntos */
+    /* Ocultar toolbar (GitHub, Fork) pero mantener header */
+    [data-testid="stToolbar"] {display: none;}
+    
+    /* Mantener visible el menú de 3 puntos y botón << */
     #MainMenu {visibility: visible !important;}
-    #stHeader {visibility: visible !important;}
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -23,6 +25,7 @@ Explora el procesamiento de imágenes con OpenCV.
 **Navega usando el menú lateral ⬅️**
 """)
 st.info("👈 Selecciona un capítulo del menú lateral para comenzar")
+
 
 
 

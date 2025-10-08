@@ -95,28 +95,6 @@ with st.sidebar:
         st.session_state.target_rect = None
         st.success("Objetivos limpiados")
     
-    st.markdown("---")
-    st.markdown("""
-    ### 📖 Instrucciones
-    
-    **Paso 1: Capturar imagen objetivo**
-    1. Toma una foto del objeto que quieres rastrear
-    2. El objeto debe tener características visuales claras
-    
-    **Paso 2: Seleccionar región**
-    1. Usa los deslizadores para definir el área rectangular
-    2. Ajusta las coordenadas X e Y inicial y final
-    
-    **Paso 3: Capturar para rastreo**
-    1. Toma nuevas fotos mostrando el mismo objeto
-    2. La pirámide 3D aparecerá sobre el objeto
-    
-    ### 💡 Tips
-    - Usa objetos con texturas o patrones
-    - Evita superficies lisas o uniformes
-    - Buena iluminación mejora el rastreo
-    """)
-
 # Captura de imagen objetivo
 camera_photo = st.camera_input("📸 Captura imagen")
 
@@ -206,28 +184,3 @@ if camera_photo is not None:
 else:
     st.warning("📸 Captura una imagen para comenzar")
     
-    with st.expander("ℹ️ ¿Cómo funciona la Realidad Aumentada?"):
-        st.markdown("""
-        ### 🎯 Tecnología de Rastreo
-        
-        1. **Detección de características (ORB)**
-           - Identifica puntos clave en la imagen objetivo
-           - Crea descriptores únicos para cada punto
-        
-        2. **Matching de características**
-           - Compara puntos entre imagen objetivo y nueva captura
-           - Usa FLANN (Fast Library for Approximate Nearest Neighbors)
-        
-        3. **Estimación de pose (Homografía)**
-           - Calcula la transformación de perspectiva
-           - Determina posición y orientación del objeto
-        
-        4. **Proyección 3D**
-           - Usa solvePnP para proyectar coordenadas 3D
-           - Dibuja la pirámide sobre el objeto rastreado
-        
-        ### 📐 Geometría de la Pirámide
-        - **Base:** 4 vértices en el plano del objeto
-        - **Vértice superior:** Proyectado en 3D
-        - **Caras:** 4 triángulos laterales + 1 base
-        """)

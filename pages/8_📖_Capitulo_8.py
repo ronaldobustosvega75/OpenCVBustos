@@ -1,79 +1,68 @@
 import streamlit as st
 import cv2
 import numpy as np
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration
 
 st.set_page_config(page_title="Capítulo 8", page_icon="🎨", layout="wide")
-st.title("🎨 Capítulo 8: Detector de Color Azul en Tiempo Real")
+st.title("🎨 Capítulo 8: Detector de Color Azul")
 
-# Configuración para WebRTC
-RTC_CONFIGURATION = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-)
+st.info("📸 La cámara se mostrará en tiempo real. Toma fotos para detectar objetos azules.")
 
-class ColorDetector(VideoTransformerBase):
-    """Detector de color azul en tiempo real"""
+# Controles de ajuste
+with st.sidebar:
+    st.header("⚙️ Ajustes de Detección")
+    h_min = st.slider("Matiz Mínimo (H)", 0, 180, 100)
+    h_max = st.slider("Matiz Máximo (H)", 0, 180, 130)
+    s_min = st.slider("Saturación Mínima (S)", 0, 255, 100)
+    v_min = st.slider("Valor Mínimo (V)", 0, 255, 100)
     
-    def __init__(self):
-        self.lower_blue = np.array([100, 100, 100])
-        self.upper_blue = np.array([130, 255, 255])
-        self.show_mask = False
+    st.markdown("---")
+    st.markdown("""
+    ### 💡 Tip
+    Ajusta los deslizadores si no detecta bien el azul
+    """)
+
+# Cámara en tiempo real - captura fotos
+camera_photo = st.camera_input("Captura una foto")
+
+if camera_photo is not None:
+    # Convertir la foto capturada a formato OpenCV
+    bytes_data = camera_photo.getvalue()
+    img_array = np.frombuffer(bytes_data, np.uint8)
+    frame = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
     
-    def transform(self, frame):
-        img = frame.to_ndarray(format="bgr24")
-        
-        # Convertir a HSV
-        hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        
-        # Crear máscara para detectar azul
-        mask = cv2.inRange(hsv_frame, self.lower_blue, self.upper_blue)
-        
-        # Aplicar la máscara
-        res = cv2.bitwise_and(img, img, mask=mask)
-        res = cv2.medianBlur(res, ksize=5)
-        
-        # Mostrar máscara o resultado
-        if self.show_mask:
-            return cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-        else:
-            return res
-
-# Controles
-st.sidebar.header("⚙️ Controles")
-show_original = st.sidebar.checkbox("Mostrar video original", value=False)
-show_mask = st.sidebar.checkbox("Mostrar máscara binaria", value=False)
-
-# Contenedor para el video
-col1, col2 = st.columns(2)
-
-if show_original:
+    # Rangos personalizables para detectar azul en HSV
+    lower = np.array([h_min, s_min, v_min])
+    upper = np.array([h_max, 255, 255])
+    
+    # Procesar la imagen
+    hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv_frame, lower, upper)
+    res = cv2.bitwise_and(frame, frame, mask=mask)
+    res = cv2.medianBlur(res, ksize=5)
+    
+    # Mostrar resultados en columnas
+    col1, col2, col3 = st.columns(3)
+    
     with col1:
-        st.subheader("📹 Video Original")
-        webrtc_streamer(
-            key="original",
-            rtc_configuration=RTC_CONFIGURATION,
-            media_stream_constraints={"video": True, "audio": False}
-        )
+        st.subheader("📷 Original")
+        st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), use_container_width=True)
     
     with col2:
-        st.subheader("🔵 Detector de Azul")
-        ctx = webrtc_streamer(
-            key="detector",
-            rtc_configuration=RTC_CONFIGURATION,
-            video_transformer_factory=ColorDetector,
-            media_stream_constraints={"video": True, "audio": False}
-        )
-        
-        if ctx.video_transformer:
-            ctx.video_transformer.show_mask = show_mask
-else:
-    st.subheader("🔵 Detector de Color Azul")
-    ctx = webrtc_streamer(
-        key="detector_full",
-        rtc_configuration=RTC_CONFIGURATION,
-        video_transformer_factory=ColorDetector,
-        media_stream_constraints={"video": True, "audio": False}
-    )
+        st.subheader("🎭 Máscara")
+        st.image(mask, use_container_width=True, channels="GRAY")
     
-    if ctx.video_transformer:
-        ctx.video_transformer.show_mask = show_mask
+    with col3:
+        st.subheader("🔵 Detector")
+        st.image(cv2.cvtColor(res, cv2.COLOR_BGR2RGB), use_container_width=True)
+    
+    # Información adicional
+    pixels_detectados = cv2.countNonZero(mask)
+    total_pixels = mask.shape[0] * mask.shape[1]
+    porcentaje = (pixels_detectados / total_pixels) * 100
+    
+    st.metric("Píxeles azules detectados", f"{porcentaje:.2f}%")
+
+else:
+    st.warning("📸 Usa el botón de la cámara arriba para capturar una imagen")
+
+

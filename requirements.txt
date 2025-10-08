@@ -1,5 +1,5 @@
-numpy==1.26.4
-opencv-python-headless==4.9.0.80
-scikit-learn==1.4.2
-streamlit==1.38.0
-streamlit-drawable-canvas==0.9.3
+numpy
+opencv-python-headless
+scikit-learn
+streamlit
+streamlit-drawable-canvas

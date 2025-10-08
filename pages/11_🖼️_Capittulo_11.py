@@ -7,6 +7,7 @@ from sklearn import preprocessing
 from sklearn.datasets import fetch_openml
 from pathlib import Path
 import tempfile
+from utils import setup_page
 
 st.set_page_config(page_title="Capítulo 11", page_icon="🔍", layout="wide")
 
@@ -233,4 +234,5 @@ if uploaded_file:
             st.write(f"**Predicción:** {label}")
             st.write(f"**Diferencia entre clases:** {diferencia:.2f}%")
             if diferencia < 15:
+
                 st.warning("⚠️ Considera reentrenar con más imágenes o imágenes de mejor calidad")

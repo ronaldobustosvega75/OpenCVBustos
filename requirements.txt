@@ -3,3 +3,5 @@ opencv-python-headless
 scikit-learn
 streamlit
 streamlit-drawable-canvas
+streamlit-webrtc
+av

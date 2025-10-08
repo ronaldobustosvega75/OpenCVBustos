@@ -1,3 +1,4 @@
+import streamlit as st
 import cv2
 import numpy as np
 
@@ -46,5 +47,6 @@ if uploaded_file is not None:
         st.error(f"⚠️ Error al procesar la imagen: {type(e).__name__}")
 else:
     st.info("👆 Sube una imagen para comenzar")
+
 
 

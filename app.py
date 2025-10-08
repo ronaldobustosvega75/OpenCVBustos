@@ -4,7 +4,6 @@ st.set_page_config(page_title="Procesamiento de Imágenes", page_icon="🎨", la
 
 hide_streamlit_style = """
     <style>
-    header {visibility: hidden;}
     .stDeployButton {display:none;}
     .viewerBadge_container__1QSob {display: none;}
     

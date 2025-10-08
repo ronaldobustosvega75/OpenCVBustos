@@ -5,6 +5,9 @@ st.set_page_config(page_title="Procesamiento de Imágenes", page_icon="🎨", la
 hide_streamlit_style = """
     <style>
     header {visibility: hidden;}
+    header[data-testid="stHeader"] {
+        visibility: visible !important;
+    }
     .stDeployButton {display:none;}
     .viewerBadge_container__1QSob {display: none;}
     
@@ -22,6 +25,7 @@ Explora el procesamiento de imágenes con OpenCV.
 **Navega usando el menú lateral ⬅️**
 """)
 st.info("👈 Selecciona un capítulo del menú lateral para comenzar")
+
 
 
 

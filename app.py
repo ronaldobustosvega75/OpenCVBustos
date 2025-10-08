@@ -8,6 +8,8 @@ hide_streamlit_style = """
     #MainMenu {visibility: visible;}
     footer {visibility: hidden;}
     .stDeployButton {display: none;}
+    /* Ocultar botón Fork y GitHub */
+    header[data-testid="stHeader"] > div > div > a {display: none;}
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -19,6 +21,5 @@ Explora el procesamiento de imágenes con OpenCV.
 **Navega usando el menú lateral ⬅️**
 """)
 st.info("👈 Selecciona un capítulo del menú lateral para comenzar")
-
 
 

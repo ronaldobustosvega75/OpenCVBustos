@@ -10,6 +10,9 @@ hide_streamlit_style = """
     button[kind="header"] {display: none;}
     .viewerBadge_container__1QSob {display: none;}
     [data-testid="stDecoration"] {display: none;}
+
+    /* Asegurar que las flechitas de navegación estén visibles */
+    [data-testid="stHeader"] button[kind="header"] {display: block !important; visibility: visible !important;}
     
     /* Mantener visible el menú de 3 puntos */
     #MainMenu {visibility: visible !important;}
@@ -25,6 +28,7 @@ Explora el procesamiento de imágenes con OpenCV.
 **Navega usando el menú lateral ⬅️**
 """)
 st.info("👈 Selecciona un capítulo del menú lateral para comenzar")
+
 
 
 

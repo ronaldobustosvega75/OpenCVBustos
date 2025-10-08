@@ -7,9 +7,7 @@ hide_streamlit_style = """
     /* Ocultar Deploy y badges */
     .stDeployButton {display: none;}
     .viewerBadge_container__1QSob {display: none;}
-    
-    /* Ocultar toolbar (GitHub, Fork) pero mantener header */
-    [data-testid="stToolbar"] {display: none;}
+
     
     /* Mantener visible el menú de 3 puntos y botón << */
     #MainMenu {visibility: visible !important;}
@@ -25,6 +23,7 @@ Explora el procesamiento de imágenes con OpenCV.
 **Navega usando el menú lateral ⬅️**
 """)
 st.info("👈 Selecciona un capítulo del menú lateral para comenzar")
+
 
 
 

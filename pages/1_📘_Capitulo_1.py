@@ -1,6 +1,7 @@
 import streamlit as st
 import cv2
 import numpy as np
+from utils import setup_page
 
 st.set_page_config(page_title="Capítulo 1", page_icon="🎨", layout="wide")
 st.title("🎨 Capítulo 1: Fusión de Canales de Color")
@@ -47,6 +48,7 @@ if uploaded_file is not None:
         st.error(f"⚠️ Error al procesar la imagen: {type(e).__name__}")
 else:
     st.info("👆 Sube una imagen para comenzar")
+
 
 
 

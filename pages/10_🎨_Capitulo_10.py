@@ -6,6 +6,77 @@ from pose_estimation import PoseEstimator
 st.set_page_config(page_title="Capítulo 10", page_icon="🎯", layout="wide")
 st.title("🎯 Capítulo 10: Realidad Aumentada - Pirámide 3D")
 
+# Definir la función ANTES de usarla
+def overlay_pyramid(img, tracked):
+    """Dibuja una pirámide 3D sobre el objeto rastreado"""
+    
+    x_start, y_start, x_end, y_end = tracked.target.rect
+    
+    # Definir cuadrilátero 3D de referencia
+    quad_3d = np.float32([
+        [x_start, y_start, 0],
+        [x_end, y_start, 0],
+        [x_end, y_end, 0],
+        [x_start, y_end, 0]
+    ])
+    
+    # Parámetros de la cámara
+    h, w = img.shape[:2]
+    K = np.float64([
+        [w, 0, 0.5*(w-1)],
+        [0, w, 0.5*(h-1)],
+        [0, 0, 1.0]
+    ])
+    dist_coef = np.zeros(4)
+    
+    # Resolver PnP para obtener rotación y traslación
+    ret, rvec, tvec = cv2.solvePnP(quad_3d, tracked.quad, K, dist_coef)
+    
+    # Vértices de la pirámide (base + vértice superior)
+    pyramid_height = 4  # Altura de la pirámide
+    overlay_vertices = np.float32([
+        [0, 0, 0],           # Base: esquina inferior izquierda
+        [0, 1, 0],           # Base: esquina superior izquierda
+        [1, 1, 0],           # Base: esquina superior derecha
+        [1, 0, 0],           # Base: esquina inferior derecha
+        [0.5, 0.5, pyramid_height]  # Vértice superior (centro)
+    ])
+    
+    # Escalar y trasladar vértices
+    scale = [(x_end-x_start), (y_end-y_start), -(x_end-x_start)*0.3]
+    verts = overlay_vertices * scale + (x_start, y_start, 0)
+    
+    # Proyectar vértices 3D a 2D
+    verts = cv2.projectPoints(verts, rvec, tvec, K, dist_coef)[0].reshape(-1, 2)
+    verts = np.int32(verts)
+    
+    # Dibujar base de la pirámide
+    cv2.drawContours(img, [verts[:4]], -1, (0, 255, 0), -3)
+    
+    # Dibujar caras laterales con diferentes colores
+    colors = [
+        (0, 255, 0),    # Verde
+        (255, 0, 0),    # Azul
+        (0, 0, 150),    # Rojo oscuro
+        (255, 255, 0)   # Cian
+    ]
+    
+    for i in range(4):
+        face = np.vstack([
+            verts[i:i+1],
+            verts[(i+1)%4:(i+1)%4+1],
+            verts[4:5]
+        ])
+        cv2.drawContours(img, [face], -1, colors[i], -3)
+    
+    # Dibujar aristas de la pirámide
+    edges = [(0, 1), (1, 2), (2, 3), (3, 0), (0, 4), (1, 4), (2, 4), (3, 4)]
+    for i, j in edges:
+        pt1 = tuple(verts[i])
+        pt2 = tuple(verts[j])
+        cv2.line(img, pt1, pt2, (0, 0, 0), 2)
+
+
 st.info("📸 Captura una foto y luego selecciona el área del objeto a rastrear haciendo clic y arrastrando")
 
 # Inicializar session_state
@@ -160,73 +231,3 @@ else:
         - **Vértice superior:** Proyectado en 3D
         - **Caras:** 4 triángulos laterales + 1 base
         """)
-
-
-def overlay_pyramid(img, tracked):
-    """Dibuja una pirámide 3D sobre el objeto rastreado"""
-    
-    x_start, y_start, x_end, y_end = tracked.target.rect
-    
-    # Definir cuadrilátero 3D de referencia
-    quad_3d = np.float32([
-        [x_start, y_start, 0],
-        [x_end, y_start, 0],
-        [x_end, y_end, 0],
-        [x_start, y_end, 0]
-    ])
-    
-    # Parámetros de la cámara
-    h, w = img.shape[:2]
-    K = np.float64([
-        [w, 0, 0.5*(w-1)],
-        [0, w, 0.5*(h-1)],
-        [0, 0, 1.0]
-    ])
-    dist_coef = np.zeros(4)
-    
-    # Resolver PnP para obtener rotación y traslación
-    ret, rvec, tvec = cv2.solvePnP(quad_3d, tracked.quad, K, dist_coef)
-    
-    # Vértices de la pirámide (base + vértice superior)
-    pyramid_height = 4  # Altura de la pirámide
-    overlay_vertices = np.float32([
-        [0, 0, 0],           # Base: esquina inferior izquierda
-        [0, 1, 0],           # Base: esquina superior izquierda
-        [1, 1, 0],           # Base: esquina superior derecha
-        [1, 0, 0],           # Base: esquina inferior derecha
-        [0.5, 0.5, pyramid_height]  # Vértice superior (centro)
-    ])
-    
-    # Escalar y trasladar vértices
-    scale = [(x_end-x_start), (y_end-y_start), -(x_end-x_start)*0.3]
-    verts = overlay_vertices * scale + (x_start, y_start, 0)
-    
-    # Proyectar vértices 3D a 2D
-    verts = cv2.projectPoints(verts, rvec, tvec, K, dist_coef)[0].reshape(-1, 2)
-    verts = np.int32(verts)
-    
-    # Dibujar base de la pirámide
-    cv2.drawContours(img, [verts[:4]], -1, (0, 255, 0), -3)
-    
-    # Dibujar caras laterales con diferentes colores
-    colors = [
-        (0, 255, 0),    # Verde
-        (255, 0, 0),    # Azul
-        (0, 0, 150),    # Rojo oscuro
-        (255, 255, 0)   # Cian
-    ]
-    
-    for i in range(4):
-        face = np.vstack([
-            verts[i:i+1],
-            verts[(i+1)%4:(i+1)%4+1],
-            verts[4:5]
-        ])
-        cv2.drawContours(img, [face], -1, colors[i], -3)
-    
-    # Dibujar aristas de la pirámide
-    edges = [(0, 1), (1, 2), (2, 3), (3, 0), (0, 4), (1, 4), (2, 4), (3, 4)]
-    for i, j in edges:
-        pt1 = tuple(verts[i])
-        pt2 = tuple(verts[j])
-        cv2.line(img, pt1, pt2, (0, 0, 0), 2)

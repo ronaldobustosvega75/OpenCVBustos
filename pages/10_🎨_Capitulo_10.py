@@ -2,6 +2,7 @@ import streamlit as st
 import cv2
 import numpy as np
 from pose_estimation import PoseEstimator, ROISelector
+from utils import setup_page
 
 st.set_page_config(page_title="Capítulo 10", page_icon="🎯", layout="wide")
 st.title("🎯 Capítulo 10: Realidad Aumentada")
@@ -112,4 +113,5 @@ else:
     if st.session_state.tracker:
         st.session_state.tracker.release()
         st.session_state.tracker = None
+
     st.warning("Activa la cámara para comenzar")
